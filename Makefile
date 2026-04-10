@@ -30,8 +30,8 @@ CURRENT_VERSION_MAJOR := $(NEXT_MAJOR).0.0
 endif
 
 # Go cannot specify a default entry point in go.mod; use PROJECT_ENTRY explicitly.
-PROJECT_ENTRY := ./main.go
-BINARY_NAME   := go-neural-network
+PROJECT_ENTRY := ./cmd/proto/main.go
+BINARY_NAME   := gnn-proto
 WGO_INCLUDE   := -file .go
 
 .DEFAULT_GOAL := help
