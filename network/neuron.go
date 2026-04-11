@@ -1,20 +1,4 @@
-/*
-Example neural net:
-I  H  O
-1  0  0
-0  1  0
-
-	H[0]: {
-		I[0]: 1, W:0.5
-		I[1]: 0, W:2
-
-		x = (1*0.5)+(0*2)+bias
-		x = 0.5
-
-		activation = fn(x) float64
-	}
-*/
-package neuron
+package network
 
 import "github.com/CTNOriginals/go-neural-network/activators"
 

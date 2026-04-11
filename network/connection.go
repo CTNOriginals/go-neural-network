@@ -1,4 +1,4 @@
-package neuron
+package network
 
 type Connection struct {
 	Origin *Neuron
