@@ -39,5 +39,5 @@ func (this Neuron) Compute() float64 {
 }
 
 func (this *Neuron) Activate() {
-	this.Value = this.activator(this.Compute())
+	this.Value = this.activator.Forward(this.Compute())
 }
