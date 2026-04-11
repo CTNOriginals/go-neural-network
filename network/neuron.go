@@ -5,7 +5,7 @@ import (
 )
 
 type Neuron struct {
-	Weights []Connection
+	Weights []*Connection
 	Bias    float64
 	Value   float64
 
