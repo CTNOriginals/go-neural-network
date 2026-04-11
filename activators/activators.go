@@ -1,6 +1,9 @@
 package activators
 
-import "math"
+import (
+	"fmt"
+	"math"
+)
 
 type TMethod func(x float64) float64
 
@@ -48,4 +51,23 @@ var Sigmoid = Activator{
 		var sigmoid = 1 / (1 + math.Pow(math.E, -x))
 		return sigmoid * (1 - sigmoid)
 	},
+}
+
+func PrintResults(x float64) {
+	var methods = []Activator{
+		ReLU,
+		LeakyReLU,
+		Sigmoid,
+	}
+	var names = []string{
+		"ReLU",
+		"LeakyReLU",
+		"Sigmoid",
+	}
+
+	fmt.Printf("--- %.2f ----\n", x)
+
+	for i, fn := range methods {
+		fmt.Printf("%s:   \t %.2f\t%.2f\n", names[i], fn.Forward(x), fn.Backward(x))
+	}
 }
