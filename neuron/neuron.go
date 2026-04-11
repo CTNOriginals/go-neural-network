@@ -11,32 +11,25 @@ I  H  O
 		x = (1*0.5)+(0*2)+bias
 		x = 0.5
 
-		activation = fn(x) int
+		activation = fn(x) float64
 	}
 */
 package neuron
 
-type Connection struct {
-	Origin *Neuron
-	Weight int
-}
-
-func (this Connection) Value() int {
-	return this.Origin.Value * this.Weight
-}
-
-type TActivatorFn func(val int) int
+import "github.com/CTNOriginals/go-neural-network/activators"
 
 type Neuron struct {
 	Weights []Connection
-	Bias    int
-	Value   int
+	Bias    float64
+	Value   float64
 
-	activator TActivatorFn
+	activator activators.TActivator
 }
 
-func (this Neuron) RawValue() int {
-	var sum = 0
+// Compute calculates the raw combined value
+// of this neuron and returns it.
+func (this Neuron) Compute() float64 {
+	var sum float64 = 0
 
 	for _, connection := range this.Weights {
 		sum += connection.Value()
@@ -45,6 +38,6 @@ func (this Neuron) RawValue() int {
 	return sum + this.Bias
 }
 
-func (this Neuron) Activate() int {
-	return this.activator(this.RawValue())
+func (this *Neuron) Activate() {
+	this.Value = this.activator(this.Compute())
 }
