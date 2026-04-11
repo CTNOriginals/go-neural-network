@@ -23,7 +23,7 @@ type Neuron struct {
 	Bias    float64
 	Value   float64
 
-	activator activators.TActivator
+	activator activators.Activator
 }
 
 // Compute calculates the raw combined value
