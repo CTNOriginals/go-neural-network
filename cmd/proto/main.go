@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/CTNOriginals/go-neural-network/activators"
+	"github.com/CTNOriginals/go-neural-network/formulas"
 )
 
 func main() {
@@ -17,6 +17,6 @@ func main() {
 	var nums = []float64{0, 0.5, 1, -1, 2, 5, -5, 10, 100}
 
 	for _, num := range nums {
-		activators.PrintResults(num)
+		formulas.PrintResults(num)
 	}
 }

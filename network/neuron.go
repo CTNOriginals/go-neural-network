@@ -1,13 +1,15 @@
 package network
 
-import "github.com/CTNOriginals/go-neural-network/activators"
+import (
+	"github.com/CTNOriginals/go-neural-network/formulas"
+)
 
 type Neuron struct {
 	Weights []Connection
 	Bias    float64
 	Value   float64
 
-	activator activators.Activator
+	activator formulas.Activator
 }
 
 // Compute calculates the raw combined value

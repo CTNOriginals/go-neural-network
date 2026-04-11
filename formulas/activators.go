@@ -1,4 +1,4 @@
-package activators
+package formulas
 
 import (
 	"fmt"
