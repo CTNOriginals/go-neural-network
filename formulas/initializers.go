@@ -10,6 +10,16 @@ const (
 	Random
 )
 
+var InitializerNames = []string{
+	"Zero",
+	"One",
+	"Random",
+}
+
+func (this TInitializer) String() string {
+	return InitializerNames[this]
+}
+
 type TInitializerFn func() float64
 
 var Initializers = map[TInitializer]TInitializerFn{

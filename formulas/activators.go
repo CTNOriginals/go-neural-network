@@ -19,6 +19,10 @@ var ActivatorNames = []string{
 	"Sigmoid",
 }
 
+func (this TActivator) String() string {
+	return ActivatorNames[this]
+}
+
 type TActivatorFn func(x float64) float64
 
 type Activator struct {

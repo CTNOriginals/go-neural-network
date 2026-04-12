@@ -1,6 +1,8 @@
 package network
 
 import (
+	"fmt"
+
 	"github.com/CTNOriginals/go-neural-network/formulas"
 )
 
@@ -10,6 +12,15 @@ type Neuron struct {
 	Value   float64
 
 	activator formulas.Activator
+}
+
+func (this Neuron) String() string {
+	return fmt.Sprintf(
+		"V%.2f B%.2f W%v",
+		this.Value,
+		this.Bias,
+		this.Weights,
+	)
 }
 
 // Compute calculates the raw combined value
