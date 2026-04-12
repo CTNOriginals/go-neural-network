@@ -2,17 +2,23 @@ package network
 
 import "github.com/CTNOriginals/go-neural-network/formulas"
 
-type Layer struct {
-	Neurons         []*Neuron
+type LayerDefinition struct {
+	Size            int
 	ActivatorType   formulas.TActivator
 	InitializerType formulas.TInitializer
 }
 
-func NewLayer(size int, activatorType formulas.TActivator, initializerType formulas.TInitializer) *Layer {
-	var neurons = make([]*Neuron, size)
+type Layer struct {
+	Neurons     []*Neuron
+	Activator   formulas.Activator
+	Initializer formulas.TInitializerFn
+}
 
-	var activator = formulas.Activators[activatorType]
-	var initializer = formulas.Initializers[initializerType]
+func NewLayer(def LayerDefinition) *Layer {
+	var neurons = make([]*Neuron, def.Size)
+
+	var initializer = formulas.Initializers[def.InitializerType]
+	var activator = formulas.Activators[def.ActivatorType]
 
 	for i := range len(neurons) {
 		neurons[i] = &Neuron{
@@ -25,9 +31,9 @@ func NewLayer(size int, activatorType formulas.TActivator, initializerType formu
 	}
 
 	return &Layer{
-		Neurons:         neurons,
-		ActivatorType:   activatorType,
-		InitializerType: initializerType,
+		Neurons:     neurons,
+		Activator:   activator,
+		Initializer: initializer,
 	}
 }
 
@@ -35,7 +41,6 @@ func NewLayer(size int, activatorType formulas.TActivator, initializerType formu
 // each neuron in the previous layer
 // and assigns a weight to that connection.
 func (this Layer) Connect(source *Layer) {
-	var initializer = formulas.Initializers[this.InitializerType]
 
 	for _, neuron := range this.Neurons {
 		neuron.Weights = make([]*Connection, len(source.Neurons))
@@ -43,7 +48,7 @@ func (this Layer) Connect(source *Layer) {
 		for i, origin := range source.Neurons {
 			neuron.Weights[i] = &Connection{
 				Origin: origin,
-				Weight: initializer(),
+				Weight: this.Initializer(),
 			}
 		}
 	}
