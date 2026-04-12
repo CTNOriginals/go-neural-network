@@ -12,6 +12,8 @@ type Layer struct {
 	Neurons     []*Neuron
 	Activator   formulas.Activator
 	Initializer formulas.TInitializerFn
+
+	definition LayerDefinition
 }
 
 func NewLayer(def LayerDefinition) *Layer {
@@ -34,6 +36,7 @@ func NewLayer(def LayerDefinition) *Layer {
 		Neurons:     neurons,
 		Activator:   activator,
 		Initializer: initializer,
+		definition:  def,
 	}
 }
 
