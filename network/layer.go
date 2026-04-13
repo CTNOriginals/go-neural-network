@@ -2,6 +2,7 @@ package network
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/CTNOriginals/go-neural-network/formulas"
 )
@@ -45,14 +46,18 @@ func NewLayer(def LayerDefinition) *Layer {
 }
 
 func (this Layer) String() string {
-	var neurons = ""
+	var neurons strings.Builder
 
 	for i, neuron := range this.Neurons {
-		neurons += fmt.Sprintf(
-			" %d: %s\n",
+		fmt.Fprintf(&neurons,
+			" %d: %s",
 			i,
 			neuron.String(),
 		)
+
+		if i < len(this.Neurons)-1 {
+			neurons.WriteRune('\n')
+		}
 	}
 
 	return fmt.Sprintf(
@@ -60,7 +65,7 @@ func (this Layer) String() string {
 		this.definition.Size,
 		this.definition.InitializerType.String(),
 		this.definition.ActivatorType.String(),
-		neurons,
+		neurons.String(),
 	)
 }
 

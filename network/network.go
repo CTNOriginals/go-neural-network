@@ -1,6 +1,9 @@
 package network
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 type Network struct {
 	Layers []*Layer
@@ -26,11 +29,11 @@ func NewNetwork(layers []LayerDefinition) *Network {
 }
 
 func (this Network) String() string {
-	var layers = ""
+	var str strings.Builder
 
 	for i, layer := range this.Layers {
-		layers += fmt.Sprintf("---- layer %d ----\n%s\n", i, layer.String())
+		fmt.Fprintf(&str, "---- layer %d ----\n%s\n", i, layer.String())
 	}
 
-	return layers
+	return str.String()
 }

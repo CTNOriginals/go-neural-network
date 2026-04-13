@@ -36,5 +36,5 @@ func main() {
 	}
 
 	var nn = network.NewNetwork(layerDef)
-	fmt.Println(nn.String())
+	fmt.Print(nn.String())
 }
