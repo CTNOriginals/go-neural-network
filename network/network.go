@@ -81,5 +81,7 @@ func (this *Network) Train(inputs []float64, expect []float64, cycles int) {
 			expect,
 			cost,
 		)
+
+		this.OutputLayer().Backward(cost)
 	}
 }

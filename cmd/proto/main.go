@@ -15,8 +15,19 @@ func main() {
 		fmt.Printf("\n---- go-neural-network END %s (%f) ----\n", startTime.Format(time.TimeOnly), time.Since(startTime).Seconds())
 	}()
 
-	var layerDef = []network.LayerDefinition{
-		{Size: 2},
+	var notGate = []network.LayerDefinition{
+		{Size: 1},
+		{
+			Size: 1,
+			Initializers: network.InitializerTypes{
+				Weight: formulas.Half,
+				Bias:   formulas.Zero,
+			},
+			ActivatorType: formulas.Sigmoid,
+		},
+	}
+	var xorGate = []network.LayerDefinition{
+		{Size: 1},
 		{
 			Size: 3,
 			Initializers: network.InitializerTypes{
@@ -35,18 +46,18 @@ func main() {
 		},
 	}
 
-	var nn = network.NewNetwork(layerDef)
+	_ = notGate
+	_ = xorGate
 
-	nn.Train(
-		[]float64{1, 0},
-		[]float64{1},
-		10,
-	)
+	var nn = network.NewNetwork(notGate)
+	// nn.Layers[len(nn.Layers)-1].Neurons[0].Weights[0].Weight = 0
+	// nn.Layers[len(nn.Layers)-1].Neurons[0].Bias = -2
 
 	fmt.Print(nn.String())
-
-	// nn.Layers[2].ErrorValue([]float64{1, 0})
-	// var val = 0.64
-	// fmt.Println(math.Sqrt(val))
-	// fmt.Println(val * val)
+	nn.Train(
+		[]float64{1},
+		[]float64{0},
+		10,
+	)
+	fmt.Print(nn.String())
 }

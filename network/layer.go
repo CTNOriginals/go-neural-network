@@ -133,6 +133,12 @@ func (this *Layer) Forward() {
 	}
 }
 
+func (this *Layer) Backward(cost float64) {
+	for _, neuron := range this.Neurons {
+		neuron.Backward(cost)
+	}
+}
+
 func (this Layer) ErrorValue(expected []float64) float64 {
 	if len(this.Neurons) != len(expected) {
 		this.error(
