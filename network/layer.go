@@ -19,9 +19,10 @@ type Layer struct {
 	Activator   formulas.Activator
 
 	definition LayerDefinition
+	index      int
 }
 
-func NewLayer(def LayerDefinition) *Layer {
+func NewLayer(def LayerDefinition, index int) *Layer {
 	var neurons = make([]*Neuron, def.Size)
 
 	var initializer = formulas.Initializers[def.InitializerType]
@@ -42,6 +43,7 @@ func NewLayer(def LayerDefinition) *Layer {
 		Initializer: initializer,
 		Activator:   activator,
 		definition:  def,
+		index:       index,
 	}
 }
 
@@ -69,6 +71,16 @@ func (this Layer) String() string {
 	)
 }
 
+func (this Layer) StringCompact() string {
+	return fmt.Sprintf(
+		"Layer ID:%d S:%d I:%s A:%s",
+		this.index,
+		this.definition.Size,
+		this.definition.InitializerType.String(),
+		this.definition.ActivatorType.String(),
+	)
+}
+
 // Connects each neuron in this to
 // each neuron in the previous layer
 // and assigns a weight to that connection.
@@ -85,4 +97,26 @@ func (this *Layer) Connect(source *Layer) {
 			neuron.Weights = append(neuron.Weights, connection)
 		}
 	}
+}
+
+func (this Layer) ErrorValue(expected []float64) float64 {
+	if len(this.Neurons) != len(expected) {
+		this.error(
+			"ErrorValue requires expected count (%d) to be equal to neuron count (%d)",
+			len(expected), len(this.Neurons),
+		)
+	}
+
+	return 0
+}
+
+func (this Layer) error(format string, args ...any) {
+	var content = fmt.Sprintf(format, args...)
+	var msg = fmt.Sprintf(
+		"%s\n%s",
+		this.StringCompact(),
+		content,
+	)
+
+	panic(msg)
 }

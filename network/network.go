@@ -15,7 +15,7 @@ func NewNetwork(layers []LayerDefinition) *Network {
 	}
 
 	for i, def := range layers {
-		var layer = NewLayer(def)
+		var layer = NewLayer(def, i)
 		network.Layers[i] = layer
 
 		if i == 0 {
