@@ -15,12 +15,6 @@ func main() {
 		fmt.Printf("\n---- go-neural-network END %s (%f) ----\n", startTime.Format(time.TimeOnly), time.Since(startTime).Seconds())
 	}()
 
-	// var nums = []float64{0, 0.5, 1, -1, 2, 5, -5, 10, 100}
-	//
-	// for _, num := range nums {
-	// 	formulas.PrintResults(num)
-	// }
-
 	var layerDef = []network.LayerDefinition{
 		{Size: 2},
 		{
@@ -36,5 +30,17 @@ func main() {
 	}
 
 	var nn = network.NewNetwork(layerDef)
+
+	nn.Train(
+		[]float64{1, 0},
+		[]float64{1},
+		10,
+	)
+
 	fmt.Print(nn.String())
+
+	// nn.Layers[2].ErrorValue([]float64{1, 0})
+	// var val = 0.64
+	// fmt.Println(math.Sqrt(val))
+	// fmt.Println(val * val)
 }

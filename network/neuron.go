@@ -35,6 +35,10 @@ func (this Neuron) Compute() float64 {
 	return sum + this.Bias
 }
 
-func (this *Neuron) Activate() {
+func (this *Neuron) Forward() {
 	this.Value = this.activator.Forward(this.Compute())
+}
+
+func (this *Neuron) Backward() {
+
 }

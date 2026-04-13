@@ -99,6 +99,35 @@ func (this *Layer) Connect(source *Layer) {
 	}
 }
 
+func (this Layer) Values() []float64 {
+	var values = make([]float64, len(this.Neurons))
+
+	for i, neuron := range this.Neurons {
+		values[i] = neuron.Value
+	}
+
+	return values
+}
+
+func (this *Layer) Set(values []float64) {
+	if len(values) != len(this.Neurons) {
+		this.error(
+			"ErrorValue requires value count (%d) to be equal to neuron count (%d)",
+			len(values), len(this.Neurons),
+		)
+	}
+
+	for i, neuron := range this.Neurons {
+		neuron.Value = values[i]
+	}
+}
+
+func (this *Layer) Forward() {
+	for _, neuron := range this.Neurons {
+		neuron.Forward()
+	}
+}
+
 func (this Layer) ErrorValue(expected []float64) float64 {
 	if len(this.Neurons) != len(expected) {
 		this.error(
