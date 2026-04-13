@@ -18,14 +18,20 @@ func main() {
 	var layerDef = []network.LayerDefinition{
 		{Size: 2},
 		{
-			Size:            3,
-			InitializerType: formulas.Random,
-			ActivatorType:   formulas.LeakyReLU,
+			Size: 3,
+			Initializers: network.InitializerTypes{
+				Weight: formulas.Random,
+				Bias:   formulas.Zero,
+			},
+			ActivatorType: formulas.LeakyReLU,
 		},
 		{
-			Size:            1,
-			InitializerType: formulas.Random,
-			ActivatorType:   formulas.Sigmoid,
+			Size: 1,
+			Initializers: network.InitializerTypes{
+				Weight: formulas.Random,
+				Bias:   formulas.Zero,
+			},
+			ActivatorType: formulas.Sigmoid,
 		},
 	}
 

@@ -35,6 +35,6 @@ var Initializers = map[TInitializer]TInitializerFn{
 		return 1
 	},
 	Random: func() float64 {
-		return rand.Float64()
+		return rand.Float64() - 0.5
 	},
 }

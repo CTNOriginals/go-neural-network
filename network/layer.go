@@ -7,16 +7,19 @@ import (
 	"github.com/CTNOriginals/go-neural-network/formulas"
 )
 
+type InitializerTypes struct {
+	Weight formulas.TInitializer
+	Bias   formulas.TInitializer
+}
+
 type LayerDefinition struct {
-	Size            int
-	InitializerType formulas.TInitializer
-	ActivatorType   formulas.TActivator
+	Size          int
+	Initializers  InitializerTypes
+	ActivatorType formulas.TActivator
 }
 
 type Layer struct {
-	Neurons     []*Neuron
-	Initializer formulas.TInitializerFn
-	Activator   formulas.Activator
+	Neurons []*Neuron
 
 	definition LayerDefinition
 	index      int
@@ -25,13 +28,13 @@ type Layer struct {
 func NewLayer(def LayerDefinition, index int) *Layer {
 	var neurons = make([]*Neuron, def.Size)
 
-	var initializer = formulas.Initializers[def.InitializerType]
+	var biasInit = formulas.Initializers[def.Initializers.Bias]
 	var activator = formulas.Activators[def.ActivatorType]
 
 	for i := range len(neurons) {
 		neurons[i] = &Neuron{
 			Weights: make([]*Connection, 0),
-			Bias:    initializer(),
+			Bias:    biasInit(),
 			Value:   0,
 
 			activator: activator,
@@ -39,11 +42,9 @@ func NewLayer(def LayerDefinition, index int) *Layer {
 	}
 
 	return &Layer{
-		Neurons:     neurons,
-		Initializer: initializer,
-		Activator:   activator,
-		definition:  def,
-		index:       index,
+		Neurons:    neurons,
+		definition: def,
+		index:      index,
 	}
 }
 
@@ -63,9 +64,10 @@ func (this Layer) String() string {
 	}
 
 	return fmt.Sprintf(
-		"Size: %d\nInitializer: %s\nActivation: %s\n%s\n",
+		"Size: %d\nInitializer: W-%s B-%s\nActivation: %s\n%s\n",
 		this.definition.Size,
-		this.definition.InitializerType.String(),
+		this.definition.Initializers.Weight.String(),
+		this.definition.Initializers.Bias.String(),
 		this.definition.ActivatorType.String(),
 		neurons.String(),
 	)
@@ -73,10 +75,11 @@ func (this Layer) String() string {
 
 func (this Layer) StringCompact() string {
 	return fmt.Sprintf(
-		"Layer ID:%d S:%d I:%s A:%s",
+		"Layer ID:%d S:%d IW:%s IB:%s A:%s",
 		this.index,
 		this.definition.Size,
-		this.definition.InitializerType.String(),
+		this.definition.Initializers.Weight.String(),
+		this.definition.Initializers.Bias.String(),
 		this.definition.ActivatorType.String(),
 	)
 }
@@ -87,11 +90,13 @@ func (this Layer) StringCompact() string {
 func (this *Layer) Connect(source *Layer) {
 	var src = *source
 
+	var weightInit = formulas.Initializers[this.definition.Initializers.Weight]
+
 	for _, neuron := range this.Neurons {
 		for _, origin := range src.Neurons {
 			var connection = &Connection{
 				Origin: origin,
-				Weight: this.Initializer(),
+				Weight: weightInit(),
 			}
 
 			neuron.Weights = append(neuron.Weights, connection)
