@@ -107,7 +107,16 @@ func (this Layer) ErrorValue(expected []float64) float64 {
 		)
 	}
 
-	return 0
+	var cost float64 = 0
+
+	for i, neuron := range this.Neurons {
+		var diff = neuron.Value - expected[i]
+		cost += diff * diff
+	}
+
+	cost = cost / float64(len(this.Neurons))
+
+	return cost
 }
 
 func (this Layer) error(format string, args ...any) {
