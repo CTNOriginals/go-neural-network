@@ -66,7 +66,7 @@ func main() {
 		[]float64{1},
 		[]float64{0},
 		0.1,
-		10,
+		1000,
 	)
 	fmt.Print(nn.String())
 }

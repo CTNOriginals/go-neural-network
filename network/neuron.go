@@ -28,27 +28,43 @@ func (this Neuron) String() string {
 	)
 }
 
-// Compute calculates the raw combined value
+// ComputeRaw calculates the raw combined value
 // of this neuron and returns it.
-func (this Neuron) Compute() float64 {
+func (this *Neuron) ComputeRaw() {
 	var sum float64 = 0
 
 	for _, connection := range this.Inputs {
 		sum += connection.Value()
 	}
 
-	return sum + this.Bias
+	this.Raw = sum + this.Bias
 }
 
 func (this *Neuron) Forward() {
-	this.Raw = this.Compute()
+	this.ComputeRaw()
 	this.Value = this.activator.Forward(this.Raw)
 }
 
+func (this *Neuron) ComputeDelta() {
+	var sum float64 = 0
+
+	for _, connection := range this.Outputs {
+		sum += connection.Delta()
+	}
+
+	this.Delta = this.activator.Backward(this.Raw) * sum
+}
+
 func (this *Neuron) Backward(rate float64) {
+	// Check if this neuron is an output neuron
+	// if so, the delta should not be changed
+	if len(this.Outputs) > 0 {
+		this.ComputeDelta()
+	}
+
 	for _, connection := range this.Inputs {
 		connection.Correct(rate, this.Delta)
 	}
 
-	this.Bias = rate * this.Delta
+	this.Bias -= rate * this.Delta
 }

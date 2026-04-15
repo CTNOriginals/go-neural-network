@@ -19,6 +19,10 @@ func (this Connection) Value() float64 {
 	return this.Source.Value * this.Weight
 }
 
+func (this Connection) Delta() float64 {
+	return this.Source.Value * this.Weight
+}
+
 func (this *Connection) Correct(rate, delta float64) {
 	var change = rate * delta * this.Source.Value
 	this.Weight -= change

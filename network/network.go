@@ -76,16 +76,19 @@ func (this Network) SetOutputDeltas(expected []float64) {
 }
 
 func (this Network) Backward(rate float64) {
-
+	for i := len(this.Layers) - 1; i > 0; i-- {
+		var layer = this.Layers[i]
+		layer.Backward(rate)
+	}
 }
 
-func (this *Network) Test(inputs []float64) []float64 {
+func (this Network) Test(inputs []float64) []float64 {
 	this.SetInputs(inputs)
 	this.Forward()
 	return this.Output()
 }
 
-func (this *Network) Train(inputs []float64, expect []float64, rate float64, cycles int) {
+func (this Network) Train(inputs []float64, expect []float64, rate float64, cycles int) {
 	this.SetInputs(inputs)
 
 	for cycle := range cycles {
@@ -101,7 +104,7 @@ func (this *Network) Train(inputs []float64, expect []float64, rate float64, cyc
 			expect,
 		)
 
-		this.OutputLayer().Backward(rate)
+		this.Backward(rate)
 	}
 
 	println("")

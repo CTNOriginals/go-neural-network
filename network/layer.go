@@ -143,12 +143,6 @@ func (this *Layer) Forward() {
 	}
 }
 
-func (this Layer) ResetDelta() {
-	for _, neuron := range this.Neurons {
-		neuron.Delta = 0
-	}
-}
-
 func (this *Layer) Backward(rate float64) {
 	for _, neuron := range this.Neurons {
 		neuron.Backward(rate)
