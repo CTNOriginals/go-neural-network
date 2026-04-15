@@ -45,18 +45,22 @@ var Activators = map[TActivator]Activator{
 	},
 	LeakyReLU: {
 		Forward: func(x float64) float64 {
-			if x >= 0 {
+			if x > 0 {
 				return x
 			}
 
 			return x * 0.01
 		},
 		Backward: func(x float64) float64 {
-			if x >= 0 {
+			if x > 0 {
 				return 1
 			}
 
-			return 0.01
+			if x < 0 {
+				return 0.01
+			}
+
+			return x
 		},
 	},
 	Sigmoid: {
