@@ -7,8 +7,10 @@ import (
 )
 
 type Neuron struct {
-	Weights []*Connection
-	Bias    float64
+	Inputs  []*Connection
+	Outputs []*Connection
+
+	Bias float64
 
 	Raw   float64
 	Value float64
@@ -22,7 +24,7 @@ func (this Neuron) String() string {
 		"V%.4f B%.2f W%v",
 		this.Value,
 		this.Bias,
-		this.Weights,
+		this.Inputs,
 	)
 }
 
@@ -31,7 +33,7 @@ func (this Neuron) String() string {
 func (this Neuron) Compute() float64 {
 	var sum float64 = 0
 
-	for _, connection := range this.Weights {
+	for _, connection := range this.Inputs {
 		sum += connection.Value()
 	}
 
@@ -44,7 +46,7 @@ func (this *Neuron) Forward() {
 }
 
 func (this *Neuron) Backward(rate float64) {
-	for _, connection := range this.Weights {
+	for _, connection := range this.Inputs {
 		connection.Correct(rate, this.Delta)
 	}
 

@@ -3,8 +3,9 @@ package network
 import "fmt"
 
 type Connection struct {
-	Origin *Neuron
-	Weight float64
+	Source      *Neuron
+	Destination *Neuron
+	Weight      float64
 
 	// The sum of values that were applied to Weight
 	Gradient float64
@@ -15,11 +16,11 @@ func (this Connection) String() string {
 }
 
 func (this Connection) Value() float64 {
-	return this.Origin.Value * this.Weight
+	return this.Source.Value * this.Weight
 }
 
 func (this *Connection) Correct(rate, delta float64) {
-	var change = rate * delta * this.Origin.Value
+	var change = rate * delta * this.Source.Value
 	this.Weight -= change
 	this.Gradient += change
 }

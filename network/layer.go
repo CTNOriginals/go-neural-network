@@ -42,7 +42,8 @@ func NewLayer(def LayerDefinition, index int) *Layer {
 
 	for i := range len(neurons) {
 		neurons[i] = &Neuron{
-			Weights: make([]*Connection, 0),
+			Inputs:  make([]*Connection, 0),
+			Outputs: make([]*Connection, 0),
 			Bias:    def.GetBiasInit()(),
 			Value:   0,
 
@@ -102,11 +103,13 @@ func (this *Layer) Connect(source *Layer) {
 	for _, neuron := range this.Neurons {
 		for _, origin := range source.Neurons {
 			var connection = &Connection{
-				Origin: origin,
-				Weight: weightInit(),
+				Source:      origin,
+				Destination: neuron,
+				Weight:      weightInit(),
 			}
 
-			neuron.Weights = append(neuron.Weights, connection)
+			neuron.Inputs = append(neuron.Inputs, connection)
+			origin.Outputs = append(origin.Outputs, connection)
 		}
 	}
 }
