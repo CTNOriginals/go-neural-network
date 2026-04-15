@@ -18,6 +18,16 @@ type LayerDefinition struct {
 	ActivatorType formulas.TActivator
 }
 
+func (this LayerDefinition) GetActivator() formulas.Activator {
+	return formulas.Activators[this.ActivatorType]
+}
+func (this LayerDefinition) GetWeightInit() formulas.TInitializerFn {
+	return formulas.Initializers[this.Initializers.Weight]
+}
+func (this LayerDefinition) GetBiasInit() formulas.TInitializerFn {
+	return formulas.Initializers[this.Initializers.Bias]
+}
+
 type Layer struct {
 	Neurons []*Neuron
 
@@ -28,13 +38,12 @@ type Layer struct {
 func NewLayer(def LayerDefinition, index int) *Layer {
 	var neurons = make([]*Neuron, def.Size)
 
-	var biasInit = formulas.Initializers[def.Initializers.Bias]
-	var activator = formulas.Activators[def.ActivatorType]
+	var activator = def.GetActivator()
 
 	for i := range len(neurons) {
 		neurons[i] = &Neuron{
 			Weights: make([]*Connection, 0),
-			Bias:    biasInit(),
+			Bias:    def.GetBiasInit()(),
 			Value:   0,
 
 			activator: activator,
@@ -88,12 +97,10 @@ func (this Layer) StringCompact() string {
 // each neuron in the previous layer
 // and assigns a weight to that connection.
 func (this *Layer) Connect(source *Layer) {
-	var src = *source
-
-	var weightInit = formulas.Initializers[this.definition.Initializers.Weight]
+	var weightInit = this.definition.GetWeightInit()
 
 	for _, neuron := range this.Neurons {
-		for _, origin := range src.Neurons {
+		for _, origin := range source.Neurons {
 			var connection = &Connection{
 				Origin: origin,
 				Weight: weightInit(),
@@ -133,30 +140,16 @@ func (this *Layer) Forward() {
 	}
 }
 
-func (this *Layer) Backward(cost float64) {
+func (this Layer) ResetDelta() {
 	for _, neuron := range this.Neurons {
-		neuron.Backward(cost)
+		neuron.Delta = 0
 	}
 }
 
-func (this Layer) ErrorValue(expected []float64) float64 {
-	if len(this.Neurons) != len(expected) {
-		this.error(
-			"ErrorValue requires expected count (%d) to be equal to neuron count (%d)",
-			len(expected), len(this.Neurons),
-		)
+func (this *Layer) Backward(rate float64) {
+	for _, neuron := range this.Neurons {
+		neuron.Backward(rate)
 	}
-
-	var cost float64 = 0
-
-	for i, neuron := range this.Neurons {
-		var diff = neuron.Value - expected[i]
-		cost += diff * diff
-	}
-
-	cost = cost / float64(len(this.Neurons))
-
-	return cost
 }
 
 func (this Layer) error(format string, args ...any) {

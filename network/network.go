@@ -53,35 +53,56 @@ func (this *Network) SetInputs(inputs []float64) {
 	this.InputLayer().Set(inputs)
 }
 
-func (this *Network) Process() {
+func (this *Network) Forward() {
 	for _, layer := range this.Layers[1:] {
 		layer.Forward()
 	}
 }
 
+func (this Network) SetOutputDeltas(expected []float64) {
+	if len(this.OutputLayer().Neurons) != len(expected) {
+		panic(fmt.Sprintf(
+			"ErrorValue requires expected count (%d) to be equal to neuron count (%d)",
+			len(expected), len(this.OutputLayer().Neurons),
+		))
+	}
+
+	var activator = this.OutputLayer().definition.GetActivator()
+
+	for i, neuron := range this.OutputLayer().Neurons {
+		var diff = neuron.Value - expected[i]
+		neuron.Delta = diff * activator.Backward(neuron.Raw)
+	}
+}
+
+func (this Network) Backward(rate float64) {
+
+}
+
 func (this *Network) Test(inputs []float64) []float64 {
 	this.SetInputs(inputs)
-	this.Process()
+	this.Forward()
 	return this.Output()
 }
 
-func (this *Network) Train(inputs []float64, expect []float64, cycles int) {
+func (this *Network) Train(inputs []float64, expect []float64, rate float64, cycles int) {
 	this.SetInputs(inputs)
 
 	for cycle := range cycles {
-		this.Process()
+		this.Forward()
 
-		var cost = this.OutputLayer().ErrorValue(expect)
+		this.SetOutputDeltas(expect)
 
 		fmt.Printf("\n-- cycle %d --\n", cycle)
 		fmt.Printf(
-			"Inp %v\nOut: %v (%v)\nScore: %.2f\n",
+			"Inp %v\nOut: %v (%v)\n",
 			inputs,
 			this.Output(),
 			expect,
-			cost,
 		)
 
-		this.OutputLayer().Backward(cost)
+		this.OutputLayer().Backward(rate)
 	}
+
+	println("")
 }

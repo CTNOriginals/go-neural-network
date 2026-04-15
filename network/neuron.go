@@ -9,7 +9,10 @@ import (
 type Neuron struct {
 	Weights []*Connection
 	Bias    float64
-	Value   float64
+
+	Raw   float64
+	Value float64
+	Delta float64
 
 	activator formulas.Activator
 }
@@ -36,15 +39,14 @@ func (this Neuron) Compute() float64 {
 }
 
 func (this *Neuron) Forward() {
-	this.Value = this.activator.Forward(this.Compute())
+	this.Raw = this.Compute()
+	this.Value = this.activator.Forward(this.Raw)
 }
 
-func (this *Neuron) Backward(cost float64) {
+func (this *Neuron) Backward(rate float64) {
 	for _, connection := range this.Weights {
-		var correction = connection.Origin.Value
-		correction *= cost
-		correction *= this.activator.Backward(this.Value)
-
-		connection.Weight *= correction
+		connection.Correct(rate, this.Delta)
 	}
+
+	this.Bias = rate * this.Delta
 }

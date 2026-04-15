@@ -23,6 +23,14 @@ func main() {
 				Weight: formulas.Half,
 				Bias:   formulas.Zero,
 			},
+			ActivatorType: formulas.LeakyReLU,
+		},
+		{
+			Size: 1,
+			Initializers: network.InitializerTypes{
+				Weight: formulas.Half,
+				Bias:   formulas.Zero,
+			},
 			ActivatorType: formulas.Sigmoid,
 		},
 	}
@@ -57,6 +65,7 @@ func main() {
 	nn.Train(
 		[]float64{1},
 		[]float64{0},
+		0.1,
 		10,
 	)
 	fmt.Print(nn.String())
