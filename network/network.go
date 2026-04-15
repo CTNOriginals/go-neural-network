@@ -93,18 +93,17 @@ func (this Network) Train(inputs []float64, expect []float64, rate float64, cycl
 
 	for cycle := range cycles {
 		this.Forward()
-
 		this.SetOutputDeltas(expect)
-
-		fmt.Printf("\n-- cycle %d --\n", cycle)
-		fmt.Printf(
-			"Inp %v\nOut: %v (%v)\n",
-			inputs,
-			this.Output(),
-			expect,
-		)
-
 		this.Backward(rate)
+
+		_ = cycle
+		// fmt.Printf("\n-- cycle %d --\n", cycle)
+		// fmt.Printf(
+		// 	"Inp %v\nOut: %v (%v)\n",
+		// 	inputs,
+		// 	this.Output(),
+		// 	expect,
+		// )
 	}
 
 	println("")
