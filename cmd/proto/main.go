@@ -7,6 +7,7 @@ import (
 	"github.com/CTNOriginals/go-neural-network/formulas"
 	"github.com/CTNOriginals/go-neural-network/layer"
 	"github.com/CTNOriginals/go-neural-network/network"
+	"github.com/CTNOriginals/go-neural-network/trainer"
 )
 
 func main() {
@@ -18,14 +19,14 @@ func main() {
 
 	var notGate = []layer.Definition{
 		{Size: 1},
-		{
-			Size: 1,
-			Initializers: layer.InitializerTypes{
-				Weight: formulas.Half,
-				Bias:   formulas.Zero,
-			},
-			ActivatorType: formulas.LeakyReLU,
-		},
+		// {
+		// 	Size: 1,
+		// 	Initializers: layer.InitializerTypes{
+		// 		Weight: formulas.Half,
+		// 		Bias:   formulas.Zero,
+		// 	},
+		// 	ActivatorType: formulas.LeakyReLU,
+		// },
 		{
 			Size: 1,
 			Initializers: layer.InitializerTypes{
@@ -56,8 +57,44 @@ func main() {
 	_ = notGate
 	_ = xorGate
 
-	var nn = network.NewNetwork(xorGate)
+	var nn = network.NewNetwork(notGate)
+	var xorTrainer = trainer.NewTrainer(nn)
+	var notTrainer = trainer.NewTrainer(nn)
+
+	xorTrainer.Data.Push(
+		trainer.Sample{
+			Inputs: []float64{0, 0},
+			Expect: []float64{0},
+		},
+		trainer.Sample{
+			Inputs: []float64{1, 0},
+			Expect: []float64{1},
+		},
+		trainer.Sample{
+			Inputs: []float64{0, 1},
+			Expect: []float64{1},
+		},
+		trainer.Sample{
+			Inputs: []float64{1, 1},
+			Expect: []float64{0},
+		},
+	)
+
+	notTrainer.Data.Push(
+		trainer.Sample{
+			Inputs: []float64{1},
+			Expect: []float64{0},
+		},
+		trainer.Sample{
+			Inputs: []float64{0},
+			Expect: []float64{1},
+		},
+	)
+
+	// xorTrainer.Train(0.05, 100000)
+	notTrainer.Train(0.05, 10000)
 
 	fmt.Print(nn.String())
-	fmt.Print(nn.Test([]float64{1, 0}))
+	fmt.Println(nn.Test([]float64{1}))
+	fmt.Println(nn.Test([]float64{0}))
 }

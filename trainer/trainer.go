@@ -1,6 +1,10 @@
 package trainer
 
-import "github.com/CTNOriginals/go-neural-network/network"
+import (
+	"fmt"
+
+	"github.com/CTNOriginals/go-neural-network/network"
+)
 
 type Trainer struct {
 	Network *network.Network
@@ -13,5 +17,21 @@ func NewTrainer(net *network.Network) *Trainer {
 	return &Trainer{
 		Network: net,
 		Data:    &data,
+	}
+}
+
+func (this Trainer) Train(rate float64, cycles int) {
+	for cycle := range cycles {
+		var sample = this.Data.GetRandonSample()
+
+		if (cycle+1)%(cycles/5) == 0 {
+			fmt.Printf("---- Training Cycle %d ----\n", cycle)
+			fmt.Printf("sample: %v\n\n", sample)
+		}
+
+		this.Network.SetInputs(sample.Inputs)
+		this.Network.Forward()
+		this.Network.SetOutputDeltas(sample.Expect)
+		this.Network.Backward(rate)
 	}
 }
