@@ -1,10 +1,11 @@
-package network
+package layer
 
 import (
 	"fmt"
 	"strings"
 
 	"github.com/CTNOriginals/go-neural-network/formulas"
+	"github.com/CTNOriginals/go-neural-network/neuron"
 )
 
 type InitializerTypes struct {
@@ -29,47 +30,44 @@ func (this LayerDefinition) GetBiasInit() formulas.TInitializerFn {
 }
 
 type Layer struct {
-	Neurons []*Neuron
+	Neurons []*neuron.Neuron
 
 	definition LayerDefinition
 	index      int
 }
 
 func NewLayer(def LayerDefinition, index int) *Layer {
-	var neurons = make([]*Neuron, def.Size)
+	var nrns = make([]*neuron.Neuron, def.Size)
 
 	var activator = def.GetActivator()
 
-	for i := range len(neurons) {
-		neurons[i] = &Neuron{
-			Inputs:  make([]*Connection, 0),
-			Outputs: make([]*Connection, 0),
-			Bias:    def.GetBiasInit()(),
-			Value:   0,
-
-			activator: activator,
-		}
+	for i := range len(nrns) {
+		nrns[i] = neuron.NewNeuron(def.GetBiasInit()(), activator)
 	}
 
 	return &Layer{
-		Neurons:    neurons,
+		Neurons:    nrns,
 		definition: def,
 		index:      index,
 	}
 }
 
-func (this Layer) String() string {
-	var neurons strings.Builder
+func (this Layer) GetDefinition() LayerDefinition {
+	return this.definition
+}
 
-	for i, neuron := range this.Neurons {
-		fmt.Fprintf(&neurons,
+func (this Layer) String() string {
+	var nrns strings.Builder
+
+	for i, nrn := range this.Neurons {
+		fmt.Fprintf(&nrns,
 			" %d: %s",
 			i,
-			neuron.String(),
+			nrn.String(),
 		)
 
 		if i < len(this.Neurons)-1 {
-			neurons.WriteRune('\n')
+			nrns.WriteRune('\n')
 		}
 	}
 
@@ -79,7 +77,7 @@ func (this Layer) String() string {
 		this.definition.Initializers.Weight.String(),
 		this.definition.Initializers.Bias.String(),
 		this.definition.ActivatorType.String(),
-		neurons.String(),
+		nrns.String(),
 	)
 }
 
@@ -94,21 +92,18 @@ func (this Layer) StringCompact() string {
 	)
 }
 
-// Connects each neuron in this to
-// each neuron in the previous layer
-// and assigns a weight to that connection.
 func (this *Layer) Connect(source *Layer) {
 	var weightInit = this.definition.GetWeightInit()
 
-	for _, neuron := range this.Neurons {
+	for _, nrn := range this.Neurons {
 		for _, origin := range source.Neurons {
-			var connection = NewConnection(
-				origin, neuron,
+			var conn = neuron.NewConnection(
+				origin, nrn,
 				weightInit(),
 			)
 
-			neuron.Inputs = append(neuron.Inputs, connection)
-			origin.Outputs = append(origin.Outputs, connection)
+			nrn.Inputs = append(nrn.Inputs, conn)
+			origin.Outputs = append(origin.Outputs, conn)
 		}
 	}
 }
@@ -116,8 +111,8 @@ func (this *Layer) Connect(source *Layer) {
 func (this Layer) Values() []float64 {
 	var values = make([]float64, len(this.Neurons))
 
-	for i, neuron := range this.Neurons {
-		values[i] = neuron.Value
+	for i, nrn := range this.Neurons {
+		values[i] = nrn.Value
 	}
 
 	return values
@@ -131,20 +126,20 @@ func (this *Layer) Set(values []float64) {
 		)
 	}
 
-	for i, neuron := range this.Neurons {
-		neuron.Value = values[i]
+	for i, nrn := range this.Neurons {
+		nrn.Value = values[i]
 	}
 }
 
 func (this *Layer) Forward() {
-	for _, neuron := range this.Neurons {
-		neuron.Forward()
+	for _, nrn := range this.Neurons {
+		nrn.Forward()
 	}
 }
 
 func (this *Layer) Backward(rate float64) {
-	for _, neuron := range this.Neurons {
-		neuron.Backward(rate)
+	for _, nrn := range this.Neurons {
+		nrn.Backward(rate)
 	}
 }
 

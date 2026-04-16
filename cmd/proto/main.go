@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/CTNOriginals/go-neural-network/formulas"
+	"github.com/CTNOriginals/go-neural-network/layer"
 	"github.com/CTNOriginals/go-neural-network/network"
 )
 
@@ -15,11 +16,11 @@ func main() {
 		fmt.Printf("\n---- go-neural-network END %s (%f) ----\n", startTime.Format(time.TimeOnly), time.Since(startTime).Seconds())
 	}()
 
-	var notGate = []network.LayerDefinition{
+	var notGate = []layer.LayerDefinition{
 		{Size: 1},
 		{
 			Size: 1,
-			Initializers: network.InitializerTypes{
+			Initializers: layer.InitializerTypes{
 				Weight: formulas.Half,
 				Bias:   formulas.Zero,
 			},
@@ -27,24 +28,24 @@ func main() {
 		},
 		{
 			Size: 1,
-			Initializers: network.InitializerTypes{
+			Initializers: layer.InitializerTypes{
 				Weight: formulas.Half,
 				Bias:   formulas.Zero,
 			},
 			ActivatorType: formulas.Sigmoid,
 		},
 	}
-	var xorGate = []network.LayerDefinition{
+	var xorGate = []layer.LayerDefinition{
 		{Size: 2},
 		{Size: 3,
-			Initializers: network.InitializerTypes{
+			Initializers: layer.InitializerTypes{
 				Weight: formulas.Half,
 				Bias:   formulas.Zero,
 			},
 			ActivatorType: formulas.LeakyReLU,
 		},
 		{Size: 1,
-			Initializers: network.InitializerTypes{
+			Initializers: layer.InitializerTypes{
 				Weight: formulas.Half,
 				Bias:   formulas.Zero,
 			},

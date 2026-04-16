@@ -1,4 +1,4 @@
-package network
+package neuron
 
 import (
 	"fmt"
@@ -19,6 +19,16 @@ type Neuron struct {
 	activator formulas.Activator
 }
 
+func NewNeuron(bias float64, activator formulas.Activator) *Neuron {
+	return &Neuron{
+		Inputs:    make([]*Connection, 0),
+		Outputs:   make([]*Connection, 0),
+		Bias:      bias,
+		Value:     0,
+		activator: activator,
+	}
+}
+
 func (this Neuron) String() string {
 	return fmt.Sprintf(
 		"V%.4f B%.2f W%v",
@@ -28,13 +38,11 @@ func (this Neuron) String() string {
 	)
 }
 
-// ComputeRaw calculates the raw combined value
-// of this neuron and returns it.
 func (this *Neuron) ComputeRaw() {
 	var sum float64 = 0
 
-	for _, connection := range this.Inputs {
-		sum += connection.Value()
+	for _, conn := range this.Inputs {
+		sum += conn.Value()
 	}
 
 	this.Raw = sum + this.Bias
@@ -48,22 +56,20 @@ func (this *Neuron) Forward() {
 func (this *Neuron) ComputeDelta() {
 	var sum float64 = 0
 
-	for _, connection := range this.Outputs {
-		sum += connection.Delta()
+	for _, conn := range this.Outputs {
+		sum += conn.Delta()
 	}
 
 	this.Delta = this.activator.Backward(this.Raw) * sum
 }
 
 func (this *Neuron) Backward(rate float64) {
-	// Check if this neuron is an output neuron
-	// if so, the delta should not be changed
 	if len(this.Outputs) > 0 {
 		this.ComputeDelta()
 	}
 
-	for _, connection := range this.Inputs {
-		connection.Correct(rate, this.Delta)
+	for _, conn := range this.Inputs {
+		conn.Correct(rate, this.Delta)
 	}
 
 	this.Bias -= rate * this.Delta
