@@ -1,4 +1,4 @@
-package network
+package neuron
 
 import "fmt"
 
@@ -8,8 +8,7 @@ type Connection struct {
 	Weight      float64
 	oldWeight   float64
 
-	// The sum of values that were applied to Weight
-	Gradient float64 // TODO:
+	Gradient float64
 }
 
 func NewConnection(source *Neuron, dest *Neuron, weight float64) *Connection {

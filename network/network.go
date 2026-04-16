@@ -3,26 +3,28 @@ package network
 import (
 	"fmt"
 	"strings"
+
+	"github.com/CTNOriginals/go-neural-network/layer"
 )
 
 type Network struct {
-	Layers []*Layer
+	Layers []*layer.Layer
 }
 
-func NewNetwork(layers []LayerDefinition) *Network {
+func NewNetwork(defs []layer.Definition) *Network {
 	var network = Network{
-		Layers: make([]*Layer, len(layers)),
+		Layers: make([]*layer.Layer, len(defs)),
 	}
 
-	for i, def := range layers {
-		var layer = NewLayer(def, i)
-		network.Layers[i] = layer
+	for i, def := range defs {
+		var lyr = layer.NewLayer(def, i)
+		network.Layers[i] = lyr
 
 		if i == 0 {
 			continue
 		}
 
-		layer.Connect(network.Layers[i-1])
+		lyr.Connect(network.Layers[i-1])
 	}
 
 	return &network
@@ -31,17 +33,17 @@ func NewNetwork(layers []LayerDefinition) *Network {
 func (this Network) String() string {
 	var str strings.Builder
 
-	for i, layer := range this.Layers {
-		fmt.Fprintf(&str, "---- layer %d ----\n%s\n", i, layer.String())
+	for i, lyr := range this.Layers {
+		fmt.Fprintf(&str, "---- layer %d ----\n%s\n", i, lyr.String())
 	}
 
 	return str.String()
 }
 
-func (this Network) InputLayer() *Layer {
+func (this Network) InputLayer() *layer.Layer {
 	return this.Layers[0]
 }
-func (this Network) OutputLayer() *Layer {
+func (this Network) OutputLayer() *layer.Layer {
 	return this.Layers[len(this.Layers)-1]
 }
 
@@ -54,8 +56,8 @@ func (this *Network) SetInputs(inputs []float64) {
 }
 
 func (this *Network) Forward() {
-	for _, layer := range this.Layers[1:] {
-		layer.Forward()
+	for _, lyr := range this.Layers[1:] {
+		lyr.Forward()
 	}
 }
 
@@ -67,18 +69,18 @@ func (this Network) SetOutputDeltas(expected []float64) {
 		))
 	}
 
-	var activator = this.OutputLayer().definition.GetActivator()
+	var activator = this.OutputLayer().GetDefinition().GetActivator()
 
-	for i, neuron := range this.OutputLayer().Neurons {
-		var diff = neuron.Value - expected[i]
-		neuron.Delta = diff * activator.Backward(neuron.Raw)
+	for i, nrn := range this.OutputLayer().Neurons {
+		var diff = nrn.Value - expected[i]
+		nrn.Delta = diff * activator.Backward(nrn.Raw)
 	}
 }
 
 func (this Network) Backward(rate float64) {
 	for i := len(this.Layers) - 1; i > 0; i-- {
-		var layer = this.Layers[i]
-		layer.Backward(rate)
+		var lyr = this.Layers[i]
+		lyr.Backward(rate)
 	}
 }
 
