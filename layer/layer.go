@@ -4,39 +4,17 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/CTNOriginals/go-neural-network/formulas"
 	"github.com/CTNOriginals/go-neural-network/neuron"
 )
-
-type InitializerTypes struct {
-	Weight formulas.TInitializer
-	Bias   formulas.TInitializer
-}
-
-type LayerDefinition struct {
-	Size          int
-	Initializers  InitializerTypes
-	ActivatorType formulas.TActivator
-}
-
-func (this LayerDefinition) GetActivator() formulas.Activator {
-	return formulas.Activators[this.ActivatorType]
-}
-func (this LayerDefinition) GetWeightInit() formulas.TInitializerFn {
-	return formulas.Initializers[this.Initializers.Weight]
-}
-func (this LayerDefinition) GetBiasInit() formulas.TInitializerFn {
-	return formulas.Initializers[this.Initializers.Bias]
-}
 
 type Layer struct {
 	Neurons []*neuron.Neuron
 
-	definition LayerDefinition
+	definition Definition
 	index      int
 }
 
-func NewLayer(def LayerDefinition, index int) *Layer {
+func NewLayer(def Definition, index int) *Layer {
 	var nrns = make([]*neuron.Neuron, def.Size)
 
 	var activator = def.GetActivator()
@@ -52,7 +30,7 @@ func NewLayer(def LayerDefinition, index int) *Layer {
 	}
 }
 
-func (this Layer) GetDefinition() LayerDefinition {
+func (this Layer) GetDefinition() Definition {
 	return this.definition
 }
 

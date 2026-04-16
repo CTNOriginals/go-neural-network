@@ -11,7 +11,7 @@ type Network struct {
 	Layers []*layer.Layer
 }
 
-func NewNetwork(defs []layer.LayerDefinition) *Network {
+func NewNetwork(defs []layer.Definition) *Network {
 	var network = Network{
 		Layers: make([]*layer.Layer, len(defs)),
 	}

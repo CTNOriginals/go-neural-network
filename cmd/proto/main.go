@@ -16,7 +16,7 @@ func main() {
 		fmt.Printf("\n---- go-neural-network END %s (%f) ----\n", startTime.Format(time.TimeOnly), time.Since(startTime).Seconds())
 	}()
 
-	var notGate = []layer.LayerDefinition{
+	var notGate = []layer.Definition{
 		{Size: 1},
 		{
 			Size: 1,
@@ -35,7 +35,7 @@ func main() {
 			ActivatorType: formulas.Sigmoid,
 		},
 	}
-	var xorGate = []layer.LayerDefinition{
+	var xorGate = []layer.Definition{
 		{Size: 2},
 		{Size: 3,
 			Initializers: layer.InitializerTypes{
