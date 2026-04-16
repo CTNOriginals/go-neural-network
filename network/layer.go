@@ -102,11 +102,10 @@ func (this *Layer) Connect(source *Layer) {
 
 	for _, neuron := range this.Neurons {
 		for _, origin := range source.Neurons {
-			var connection = &Connection{
-				Source:      origin,
-				Destination: neuron,
-				Weight:      weightInit(),
-			}
+			var connection = NewConnection(
+				origin, neuron,
+				weightInit(),
+			)
 
 			neuron.Inputs = append(neuron.Inputs, connection)
 			origin.Outputs = append(origin.Outputs, connection)

@@ -9,7 +9,16 @@ type Connection struct {
 	oldWeight   float64
 
 	// The sum of values that were applied to Weight
-	Gradient float64
+	Gradient float64 // TODO:
+}
+
+func NewConnection(source *Neuron, dest *Neuron, weight float64) *Connection {
+	return &Connection{
+		Source:      source,
+		Destination: dest,
+		Weight:      weight,
+		oldWeight:   weight,
+	}
 }
 
 func (this Connection) String() string {
