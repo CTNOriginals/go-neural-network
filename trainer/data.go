@@ -1,5 +1,7 @@
 package trainer
 
-type TrainingData struct {
-	Data []Sample
+type TrainingData []Sample
+
+func (this *TrainingData) Push(samples ...Sample) {
+	*this = append(*this, samples...)
 }
