@@ -56,39 +56,7 @@ func main() {
 	_ = xorGate
 
 	var nn = network.NewNetwork(xorGate)
-	// nn.Layers[len(nn.Layers)-1].Neurons[0].Weights[0].Weight = 0
-	// nn.Layers[len(nn.Layers)-1].Neurons[0].Bias = -2
 
 	fmt.Print(nn.String())
-	nn.Train(
-		[]float64{1, 0},
-		[]float64{1},
-		0.1,
-		1000,
-	)
-	fmt.Print(nn.String())
-	nn.Train(
-		[]float64{0, 0},
-		[]float64{0},
-		0.1,
-		1000,
-	)
-	fmt.Print(nn.String())
-	nn.Train(
-		[]float64{1, 1},
-		[]float64{0},
-		0.1,
-		1000,
-	)
-	fmt.Print(nn.String())
-	fmt.Print(nn.String())
-	nn.Train(
-		[]float64{0, 1},
-		[]float64{1},
-		0.1,
-		1000,
-	)
-	fmt.Print(nn.String())
-
-	fmt.Print(nn.Test([]float64{1, 1}))
+	fmt.Print(nn.Test([]float64{1, 0}))
 }
