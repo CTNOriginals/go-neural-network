@@ -12,13 +12,13 @@ var XorGate = NetworkDef{
 		{Size: 3,
 			Initializers: layer.InitializerTypes{
 				Weight: formulas.Random,
-				Bias:   formulas.Random,
+				Bias:   formulas.Zero,
 			},
 			ActivatorType: formulas.LeakyReLU,
 		},
 		{Size: 1,
 			Initializers: layer.InitializerTypes{
-				Weight: formulas.Random,
+				Weight: formulas.Half,
 				Bias:   formulas.Zero,
 			},
 			ActivatorType: formulas.Sigmoid,
