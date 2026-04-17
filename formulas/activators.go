@@ -52,15 +52,11 @@ var Activators = map[TActivator]Activator{
 			return x * 0.01
 		},
 		Backward: func(x float64) float64 {
-			if x > 0 {
+			if x >= 0 {
 				return 1
 			}
 
-			if x < 0 {
-				return 0.01
-			}
-
-			return x
+			return 0.01
 		},
 	},
 	Sigmoid: {

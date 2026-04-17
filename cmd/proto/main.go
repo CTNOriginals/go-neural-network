@@ -53,20 +53,21 @@ func main() {
 
 	var args = os.Args[1:]
 	var rate = 0.1
-	var cycles = 500000
+	var cycles = 80000
 
 	if len(args) > 1 {
 		cycles, _ = strconv.Atoi(args[1])
-	} else if len(args) > 0 {
+	}
+	if len(args) > 0 {
 		rate, _ = strconv.ParseFloat(args[0], 64)
 	}
 
-	var nn = NotGate.Generate()
+	var nn = XorGate.Generate()
 	nn.Trainer.Train(rate, cycles)
-	// fmt.Print(nn.Network.String())
+	fmt.Print(nn.Network.String())
 
-	// for _, sample := range *nn.Trainer.Data {
-	// 	fmt.Printf("Inputs: %s\n", stringer(sample.Inputs))
-	// 	fmt.Printf("Output: %s\n\n", stringer(nn.Network.Test(sample.Inputs)))
-	// }
+	for _, sample := range *nn.Trainer.Data {
+		fmt.Printf("Inputs: %s\n", stringer(sample.Inputs))
+		fmt.Printf("Output: %s\n\n", stringer(nn.Network.Test(sample.Inputs)))
+	}
 }
