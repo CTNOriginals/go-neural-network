@@ -24,9 +24,9 @@ func (this Trainer) Train(rate float64, cycles int) {
 	for cycle := range cycles {
 		var sample = this.Data.GetRandonSample()
 
-		if (cycle+1)%(cycles/5) == 0 {
+		if (cycle+1)%(cycles/3) == 0 {
 			fmt.Printf("---- Training Cycle %d ----\n", cycle)
-			fmt.Printf("sample: %v\n\n", sample)
+			fmt.Printf("%v", this.Network.String())
 		}
 
 		this.Network.SetInputs(sample.Inputs)
