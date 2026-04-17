@@ -8,7 +8,7 @@ type Connection struct {
 	Weight      float64
 	oldWeight   float64
 
-	Gradient float64
+	Gradient float64 // TODO:
 }
 
 func NewConnection(source *Neuron, dest *Neuron, weight float64) *Connection {
@@ -29,7 +29,7 @@ func (this Connection) Value() float64 {
 }
 
 func (this Connection) Delta() float64 {
-	return this.Source.Value * this.oldWeight
+	return this.Destination.Delta * this.oldWeight
 }
 
 func (this *Connection) Correct(rate, delta float64) {
@@ -37,5 +37,4 @@ func (this *Connection) Correct(rate, delta float64) {
 
 	this.oldWeight = this.Weight
 	this.Weight -= change
-	this.Gradient += change
 }
