@@ -48,9 +48,9 @@ func (this Trainer) Train(rate float64, cycles int) {
 			}
 		}
 
-		if (cycle+1)%max(max(cycles, 1)/3, 1) == 0 {
-			this.logCycle(cycle, strings.Join(origState, "\n"))
-		}
+		// if (cycle+1)%max(max(cycles, 1)/3, 1) == 0 {
+		// 	this.logCycle(cycle, strings.Join(origState, "\n"))
+		// }
 	}
 }
 
