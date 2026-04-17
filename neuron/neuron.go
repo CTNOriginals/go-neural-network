@@ -31,10 +31,11 @@ func NewNeuron(bias float64, activator formulas.Activator) *Neuron {
 
 func (this Neuron) String() string {
 	return fmt.Sprintf(
-		"V%.4f B%.2f W%v",
+		"V%.4f B%.2f W%v D%.2f",
 		this.Value,
 		this.Bias,
 		this.Inputs,
+		this.Delta,
 	)
 }
 

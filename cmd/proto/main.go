@@ -52,8 +52,8 @@ func main() {
 	}()
 
 	var args = os.Args[1:]
-	var rate = 0.5
-	var cycles = 3 //000000
+	var rate = 0.1
+	var cycles = 500000
 
 	if len(args) > 1 {
 		cycles, _ = strconv.Atoi(args[1])
