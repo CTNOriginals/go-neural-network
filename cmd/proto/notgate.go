@@ -9,14 +9,14 @@ import (
 var NotGate = NetworkDef{
 	Layers: []layer.Definition{
 		{Size: 1},
-		// {
-		// 	Size: 1,
-		// 	Initializers: layer.InitializerTypes{
-		// 		Weight: formulas.Half,
-		// 		Bias:   formulas.Zero,
-		// 	},
-		// 	ActivatorType: formulas.LeakyReLU,
-		// },
+		{
+			Size: 1,
+			Initializers: layer.InitializerTypes{
+				Weight: formulas.Half,
+				Bias:   formulas.Zero,
+			},
+			ActivatorType: formulas.LeakyReLU,
+		},
 		{
 			Size: 1,
 			Initializers: layer.InitializerTypes{
