@@ -21,17 +21,23 @@ func NewTrainer(net *network.Network) *Trainer {
 }
 
 func (this Trainer) Train(rate float64, cycles int) {
-	for cycle := range cycles {
-		var sample = this.Data.GetRandonSample()
+	var origState string
 
-		if (cycle+1)%(cycles/3) == 0 {
-			fmt.Printf("---- Training Cycle %d ----\n", cycle)
-			fmt.Printf("%v", this.Network.String())
-		}
+	for cycle := range cycles {
+		// var sample = this.Data.GetRandonSample()
+		var sample = (*this.Data)[len(*this.Data)/2]
+
+		origState = this.Network.StringState()
 
 		this.Network.SetInputs(sample.Inputs)
 		this.Network.Forward()
 		this.Network.SetOutputDeltas(sample.Expect)
 		this.Network.Backward(rate)
+
+		if (cycle+1)%min(cycles, 1)/3 == 0 {
+			fmt.Printf("---- Training Cycle %d ----\n", cycle)
+			fmt.Printf("-- Original --\n%v", origState)
+			fmt.Printf("-- Current  --\n%v", this.Network.StringState())
+		}
 	}
 }

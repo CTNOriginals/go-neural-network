@@ -53,7 +53,7 @@ func main() {
 
 	var args = os.Args[1:]
 	var rate = 0.5
-	var cycles = 100000
+	var cycles = 1
 
 	if len(args) > 1 {
 		cycles, _ = strconv.Atoi(args[1])
@@ -65,8 +65,8 @@ func main() {
 	nn.Trainer.Train(rate, cycles)
 	// fmt.Print(nn.Network.String())
 
-	for _, sample := range *nn.Trainer.Data {
-		fmt.Printf("Inputs: %s\n", stringer(sample.Inputs))
-		fmt.Printf("Output: %s\n\n", stringer(nn.Network.Test(sample.Inputs)))
-	}
+	// for _, sample := range *nn.Trainer.Data {
+	// 	fmt.Printf("Inputs: %s\n", stringer(sample.Inputs))
+	// 	fmt.Printf("Output: %s\n\n", stringer(nn.Network.Test(sample.Inputs)))
+	// }
 }

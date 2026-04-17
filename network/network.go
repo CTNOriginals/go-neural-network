@@ -40,6 +40,24 @@ func (this Network) String() string {
 	return str.String()
 }
 
+func (this Network) StringState() string {
+	var str strings.Builder
+
+	for _, lyr := range this.Layers {
+		fmt.Fprintf(&str, " L%d:\n", lyr.Index)
+
+		for n, nrn := range lyr.Neurons {
+			fmt.Fprintf(&str, "  N%d: %s", n, nrn.String())
+
+			if n < len(lyr.Neurons) {
+				str.WriteRune('\n')
+			}
+		}
+	}
+
+	return str.String()
+}
+
 func (this Network) InputLayer() *layer.Layer {
 	return this.Layers[0]
 }
@@ -69,7 +87,7 @@ func (this Network) SetOutputDeltas(expected []float64) {
 		))
 	}
 
-	var activator = this.OutputLayer().GetDefinition().GetActivator()
+	var activator = this.OutputLayer().Definition.GetActivator()
 
 	for i, nrn := range this.OutputLayer().Neurons {
 		var diff = nrn.Value - expected[i]
