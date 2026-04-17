@@ -10,8 +10,8 @@ import (
 type Layer struct {
 	Neurons []*neuron.Neuron
 
-	definition Definition
-	index      int
+	Definition Definition
+	Index      int
 }
 
 func NewLayer(def Definition, index int) *Layer {
@@ -25,13 +25,9 @@ func NewLayer(def Definition, index int) *Layer {
 
 	return &Layer{
 		Neurons:    nrns,
-		definition: def,
-		index:      index,
+		Definition: def,
+		Index:      index,
 	}
-}
-
-func (this Layer) GetDefinition() Definition {
-	return this.definition
 }
 
 func (this Layer) String() string {
@@ -51,10 +47,10 @@ func (this Layer) String() string {
 
 	return fmt.Sprintf(
 		"Size: %d\nInitializer: W-%s B-%s\nActivation: %s\n%s\n",
-		this.definition.Size,
-		this.definition.Initializers.Weight.String(),
-		this.definition.Initializers.Bias.String(),
-		this.definition.ActivatorType.String(),
+		this.Definition.Size,
+		this.Definition.Initializers.Weight.String(),
+		this.Definition.Initializers.Bias.String(),
+		this.Definition.ActivatorType.String(),
 		nrns.String(),
 	)
 }
@@ -62,16 +58,16 @@ func (this Layer) String() string {
 func (this Layer) StringCompact() string {
 	return fmt.Sprintf(
 		"Layer ID:%d S:%d IW:%s IB:%s A:%s",
-		this.index,
-		this.definition.Size,
-		this.definition.Initializers.Weight.String(),
-		this.definition.Initializers.Bias.String(),
-		this.definition.ActivatorType.String(),
+		this.Index,
+		this.Definition.Size,
+		this.Definition.Initializers.Weight.String(),
+		this.Definition.Initializers.Bias.String(),
+		this.Definition.ActivatorType.String(),
 	)
 }
 
 func (this *Layer) Connect(source *Layer) {
-	var weightInit = this.definition.GetWeightInit()
+	var weightInit = this.Definition.GetWeightInit()
 
 	for _, nrn := range this.Neurons {
 		for _, origin := range source.Neurons {
