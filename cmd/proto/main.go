@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -49,11 +51,19 @@ func main() {
 		fmt.Printf("\n---- go-neural-network END %s (%f) ----\n", startTime.Format(time.TimeOnly), time.Since(startTime).Seconds())
 	}()
 
+	var args = os.Args[1:]
+	var rate = 0.5
+	var cycles = 100000
+
+	if len(args) > 1 {
+		cycles, _ = strconv.Atoi(args[1])
+	} else if len(args) > 0 {
+		rate, _ = strconv.ParseFloat(args[0], 64)
+	}
+
 	var nn = NotGate.Generate()
-
-	nn.Trainer.Train(0.05, 10000)
-
-	fmt.Print(nn.Network.String())
+	nn.Trainer.Train(rate, cycles)
+	// fmt.Print(nn.Network.String())
 
 	for _, sample := range *nn.Trainer.Data {
 		fmt.Printf("Inputs: %s\n", stringer(sample.Inputs))
