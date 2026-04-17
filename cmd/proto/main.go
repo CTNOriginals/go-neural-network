@@ -2,13 +2,45 @@ package main
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
-	"github.com/CTNOriginals/go-neural-network/formulas"
 	"github.com/CTNOriginals/go-neural-network/layer"
 	"github.com/CTNOriginals/go-neural-network/network"
 	"github.com/CTNOriginals/go-neural-network/trainer"
 )
+
+type NetworkDef struct {
+	Layers  []layer.Definition
+	Samples []trainer.Sample
+
+	Network *network.Network
+	Trainer *trainer.Trainer
+}
+
+func (this *NetworkDef) Generate() *NetworkDef {
+	var net = network.NewNetwork(this.Layers)
+
+	this.Network = net
+	this.Trainer = trainer.NewTrainer(net)
+	this.Trainer.Data.Push(this.Samples...)
+
+	return this
+}
+
+func stringer(values []float64) string {
+	var builder strings.Builder
+
+	for _, value := range values {
+		fmt.Fprintf(&builder, "%.2f  ", value)
+
+		if value < 0 {
+			builder.WriteRune(' ')
+		}
+	}
+
+	return builder.String()
+}
 
 func main() {
 	var startTime = time.Now()
@@ -17,84 +49,14 @@ func main() {
 		fmt.Printf("\n---- go-neural-network END %s (%f) ----\n", startTime.Format(time.TimeOnly), time.Since(startTime).Seconds())
 	}()
 
-	var notGate = []layer.Definition{
-		{Size: 1},
-		// {
-		// 	Size: 1,
-		// 	Initializers: layer.InitializerTypes{
-		// 		Weight: formulas.Half,
-		// 		Bias:   formulas.Zero,
-		// 	},
-		// 	ActivatorType: formulas.LeakyReLU,
-		// },
-		{
-			Size: 1,
-			Initializers: layer.InitializerTypes{
-				Weight: formulas.Half,
-				Bias:   formulas.Zero,
-			},
-			ActivatorType: formulas.Sigmoid,
-		},
+	var nn = NotGate.Generate()
+
+	nn.Trainer.Train(0.05, 10000)
+
+	fmt.Print(nn.Network.String())
+
+	for _, sample := range *nn.Trainer.Data {
+		fmt.Printf("Inputs: %s\n", stringer(sample.Inputs))
+		fmt.Printf("Output: %s\n\n", stringer(nn.Network.Test(sample.Inputs)))
 	}
-	var xorGate = []layer.Definition{
-		{Size: 2},
-		{Size: 3,
-			Initializers: layer.InitializerTypes{
-				Weight: formulas.Half,
-				Bias:   formulas.Zero,
-			},
-			ActivatorType: formulas.LeakyReLU,
-		},
-		{Size: 1,
-			Initializers: layer.InitializerTypes{
-				Weight: formulas.Half,
-				Bias:   formulas.Zero,
-			},
-			ActivatorType: formulas.Sigmoid,
-		},
-	}
-
-	_ = notGate
-	_ = xorGate
-
-	var nn = network.NewNetwork(notGate)
-	var xorTrainer = trainer.NewTrainer(nn)
-	var notTrainer = trainer.NewTrainer(nn)
-
-	xorTrainer.Data.Push(
-		trainer.Sample{
-			Inputs: []float64{0, 0},
-			Expect: []float64{0},
-		},
-		trainer.Sample{
-			Inputs: []float64{1, 0},
-			Expect: []float64{1},
-		},
-		trainer.Sample{
-			Inputs: []float64{0, 1},
-			Expect: []float64{1},
-		},
-		trainer.Sample{
-			Inputs: []float64{1, 1},
-			Expect: []float64{0},
-		},
-	)
-
-	notTrainer.Data.Push(
-		trainer.Sample{
-			Inputs: []float64{1},
-			Expect: []float64{0},
-		},
-		trainer.Sample{
-			Inputs: []float64{0},
-			Expect: []float64{1},
-		},
-	)
-
-	// xorTrainer.Train(0.05, 100000)
-	notTrainer.Train(0.05, 10000)
-
-	fmt.Print(nn.String())
-	fmt.Println(nn.Test([]float64{1}))
-	fmt.Println(nn.Test([]float64{0}))
 }

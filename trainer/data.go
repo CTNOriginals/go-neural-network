@@ -7,6 +7,16 @@ import (
 
 type TrainingData []Sample
 
+func (this TrainingData) Inputs() [][]float64 {
+	var inputs = make([][]float64, len(this))
+
+	for i, sample := range this {
+		inputs[i] = sample.Inputs
+	}
+
+	return inputs
+}
+
 func (this *TrainingData) Push(samples ...Sample) {
 	*this = append(*this, samples...)
 }

@@ -30,7 +30,7 @@ CURRENT_VERSION_MAJOR := $(NEXT_MAJOR).0.0
 endif
 
 # Go cannot specify a default entry point in go.mod; use PROJECT_ENTRY explicitly.
-PROJECT_ENTRY := ./cmd/proto/main.go
+PROJECT_ENTRY := ./cmd/proto/*
 BINARY_NAME   := gnn-proto
 WGO_INCLUDE   := -file .go
 
